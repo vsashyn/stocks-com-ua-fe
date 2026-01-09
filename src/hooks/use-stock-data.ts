@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { fetchStockData, type StockAPIResponse } from '@/lib/stock-api'
+import { fetchStockData, type StockAPIResponse, getMetricValue } from '@/lib/stock-api'
 
 interface UseStockDataReturn {
   data: StockAPIResponse | null
@@ -7,6 +7,17 @@ interface UseStockDataReturn {
   error: string | null
   searchTicker: (ticker: string) => Promise<void>
   clearData: () => void
+}
+
+// Check if the API response indicates an invalid ticker
+// When ticker is invalid, API returns success but critical fields are null
+function isValidStockData(response: StockAPIResponse): boolean {
+  // Check if critical fields in market_summary are null
+  const price = getMetricValue(response.data.market_summary, 'Price')
+  const marketCap = getMetricValue(response.data.market_summary, 'MarketCapitalization')
+  
+  // If both price and market cap are null, the ticker is likely invalid
+  return price !== null || marketCap !== null
 }
 
 export function useStockData(): UseStockDataReturn {
@@ -25,6 +36,14 @@ export function useStockData(): UseStockDataReturn {
 
     try {
       const response = await fetchStockData(ticker)
+      
+      // Validate if the response contains valid data
+      if (!isValidStockData(response)) {
+        setError(`Unable to find ticker "${ticker}". Please check the ticker symbol and try again.`)
+        setData(null)
+        return
+      }
+      
       setData(response)
     } catch (err) {
       const message = err instanceof Error ? err.message : 'An unexpected error occurred'

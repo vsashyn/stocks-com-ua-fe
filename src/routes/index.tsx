@@ -9,7 +9,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useStockData } from '@/hooks/use-stock-data'
 import { getMetricValue } from '@/lib/stock-api'
-import { TrendingUp, Info } from 'lucide-react'
+import { TrendingUp, Info, AlertCircle } from 'lucide-react'
 
 export const Route = createFileRoute('/')({
   component: StockDashboard,
@@ -70,6 +70,11 @@ function StockDashboard() {
         {/* Empty State */}
         {!data && !isLoading && !error && (
           <EmptyState />
+        )}
+
+        {/* Error State - Ticker Not Found */}
+        {error && !isLoading && (
+          <TickerNotFoundError message={error} />
         )}
 
         {/* Stock Data Display */}
@@ -232,6 +237,32 @@ function EmptyState() {
       <CardContent className="text-center">
         <div className="flex flex-wrap justify-center gap-2 text-sm text-muted-foreground">
           <span>Try:</span>
+          <code className="bg-muted px-2 py-0.5 rounded">AAPL</code>
+          <code className="bg-muted px-2 py-0.5 rounded">MSFT</code>
+          <code className="bg-muted px-2 py-0.5 rounded">GOOGL</code>
+          <code className="bg-muted px-2 py-0.5 rounded">AMZN</code>
+          <code className="bg-muted px-2 py-0.5 rounded">TSLA</code>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+function TickerNotFoundError({ message }: { message: string }) {
+  return (
+    <Card className="max-w-2xl mx-auto border-destructive/50">
+      <CardHeader className="text-center pb-2">
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
+          <AlertCircle className="h-8 w-8 text-destructive" />
+        </div>
+        <CardTitle className="text-2xl text-destructive">Ticker Not Found</CardTitle>
+        <CardDescription className="text-base">
+          {message}
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="text-center">
+        <div className="flex flex-wrap justify-center gap-2 text-sm text-muted-foreground">
+          <span>Try searching for:</span>
           <code className="bg-muted px-2 py-0.5 rounded">AAPL</code>
           <code className="bg-muted px-2 py-0.5 rounded">MSFT</code>
           <code className="bg-muted px-2 py-0.5 rounded">GOOGL</code>
