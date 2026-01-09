@@ -1,5 +1,3 @@
-// Types for the stocks.com.ua API response
-
 export interface StockMetric {
   key: string
   value: string | number | null
@@ -26,7 +24,6 @@ export interface StockAPIError {
   errors?: Record<string, string[]>
 }
 
-// Helper function to get metric by key
 export function getMetricByKey(
   metrics: StockMetric[],
   key: string
@@ -34,7 +31,6 @@ export function getMetricByKey(
   return metrics.find((m) => m.key === key)
 }
 
-// Helper function to get metric value
 export function getMetricValue(
   metrics: StockMetric[],
   key: string
@@ -42,17 +38,14 @@ export function getMetricValue(
   return getMetricByKey(metrics, key)?.value ?? null
 }
 
-// Filter primary metrics
 export function getPrimaryMetrics(metrics: StockMetric[]): StockMetric[] {
   return metrics.filter((m) => m.is_primary)
 }
 
-// Filter extended (non-primary) metrics
 export function getExtendedMetrics(metrics: StockMetric[]): StockMetric[] {
   return metrics.filter((m) => !m.is_primary)
 }
 
-// Format large numbers (market cap, etc.)
 export function formatLargeNumber(num: number | string | null): string {
   if (num === null || num === undefined) return 'N/A'
   
@@ -66,7 +59,6 @@ export function formatLargeNumber(num: number | string | null): string {
   return `$${value.toFixed(2)}`
 }
 
-// Format price with $ symbol
 export function formatPrice(price: number | string | null): string {
   if (price === null || price === undefined) return 'N/A'
   const value = typeof price === 'string' ? parseFloat(price) : price
@@ -74,40 +66,32 @@ export function formatPrice(price: number | string | null): string {
   return `$${value.toFixed(2)}`
 }
 
-// Format percentage change
 export function formatPercentChange(value: string | number | null): string {
   if (value === null || value === undefined) return 'N/A'
-  // If it's already a string with %, return as is
   if (typeof value === 'string' && value.includes('%')) return value
-  // Otherwise format as percentage
   const numValue = typeof value === 'string' ? parseFloat(value) : value
   if (isNaN(numValue)) return 'N/A'
   const sign = numValue >= 0 ? '+' : ''
   return `${sign}${numValue.toFixed(2)}%`
 }
 
-// Format metric value based on its key
 export function formatMetricValue(metric: StockMetric): string {
   const { key, value } = metric
   
   if (value === null || value === undefined) return 'N/A'
   
-  // Price-related fields
   if (['Price', 'ClosePrice', '52WeekHigh', '52WeekLow', '50DayMovingAverage', '200DayMovingAverage', 'AnalystTargetPrice', 'DividendPerShare'].includes(key)) {
     return formatPrice(value)
   }
   
-  // Market cap
   if (key === 'MarketCapitalization') {
     return formatLargeNumber(value)
   }
   
-  // Percentage fields
   if (key === 'ChangePercent') {
     return formatPercentChange(value)
   }
   
-  // Price difference
   if (key === 'PriceDifference') {
     const numValue = typeof value === 'string' ? parseFloat(value) : value
     if (typeof numValue === 'number' && !isNaN(numValue)) {
@@ -116,7 +100,6 @@ export function formatMetricValue(metric: StockMetric): string {
     }
   }
   
-  // Ratio fields - display as-is with 2 decimal places
   if (['PERatio', 'ForwardPE', 'PEGRatio', 'PriceToSalesRatioTTM', 'PriceToBookRatio', 'EVToRevenue', 'EVToEBITDA'].includes(key)) {
     const numValue = typeof value === 'string' ? parseFloat(value) : value
     if (typeof numValue === 'number' && !isNaN(numValue)) {
@@ -124,11 +107,9 @@ export function formatMetricValue(metric: StockMetric): string {
     }
   }
   
-  // Default: return as string
   return String(value)
 }
 
-// API Client
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://stocks.com.ua/api/v1'
 const API_TOKEN = import.meta.env.VITE_API_TOKEN
 

@@ -29,14 +29,12 @@ export function KeyMetricsGrid({ metrics, title, className }: KeyMetricsGridProp
         <h3 className="text-base font-semibold text-foreground">{title}</h3>
       )}
       
-      {/* Primary Metrics */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
         {primaryMetrics.map((metric) => (
           <MetricCard key={metric.key} metric={metric} />
         ))}
       </div>
 
-      {/* Extended Metrics */}
       {hasExtended && (
         <>
           {showExtended && (

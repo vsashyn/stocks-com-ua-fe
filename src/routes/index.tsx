@@ -15,7 +15,6 @@ export const Route = createFileRoute('/')({
   component: StockDashboard,
 })
 
-// Sample chart data for demonstration (since API doesn't provide historical data)
 const sampleRevenueData = [
   { period: '2019', value: 260174000000 },
   { period: '2020', value: 274515000000 },
@@ -46,7 +45,6 @@ function StockDashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto flex h-14 items-center justify-between px-4">
           <h1 className="text-lg font-semibold text-foreground">
@@ -56,9 +54,7 @@ function StockDashboard() {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="container mx-auto px-4 py-6 space-y-6">
-        {/* Search Bar */}
         <section className="w-full max-w-2xl mx-auto">
           <StockSearch
             onSearch={searchTicker}
@@ -67,38 +63,31 @@ function StockDashboard() {
           />
         </section>
 
-        {/* Empty State */}
         {!data && !isLoading && !error && (
           <EmptyState />
         )}
 
-        {/* Error State - Ticker Not Found */}
         {error && !isLoading && (
           <TickerNotFoundError message={error} />
         )}
 
-        {/* Stock Data Display */}
         {data && (
           <>
-            {/* Stock Header */}
             <StockHeader
               ticker={data.ticker}
               marketSummary={data.data.market_summary}
             />
 
-            {/* Market Summary Metrics */}
             <section>
               <h2 className="text-lg font-semibold text-foreground mb-3">Market Summary</h2>
               <KeyMetricsGrid metrics={data.data.market_summary} />
             </section>
 
-            {/* Valuation Metrics */}
             <section>
               <h2 className="text-lg font-semibold text-foreground mb-3">Valuation</h2>
               <KeyMetricsGrid metrics={data.data.valuation} />
             </section>
 
-            {/* Financial Charts - Sample Data Notice */}
             <section>
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-4">
                 <div className="flex items-center gap-2">
@@ -185,7 +174,6 @@ function StockDashboard() {
               </Tabs>
             </section>
 
-            {/* Quick Stats */}
             <section>
               <h2 className="text-lg font-semibold text-foreground mb-3">Quick Stats</h2>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -211,7 +199,6 @@ function StockDashboard() {
         )}
       </main>
 
-      {/* Footer */}
       <footer className="border-t py-6 mt-8">
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
           Data provided by stocks.com.ua API • For informational purposes only

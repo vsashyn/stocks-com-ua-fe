@@ -1,6 +1,5 @@
 import { parseNumericValue, getFiscalYear, getFiscalQuarter } from './format-utils'
 
-// Types for the API response
 export interface IncomeStatementReport {
   fiscalDateEnding: string
   reportedCurrency: string
@@ -37,7 +36,6 @@ export interface StockPayload {
   }
 }
 
-// Parse overview HTML to extract key data
 export function parseOverview(overview: string) {
   const extractValue = (pattern: RegExp): string => {
     const match = overview.match(pattern)
@@ -72,7 +70,6 @@ export function parseOverview(overview: string) {
   }
 }
 
-// Transform income statement data for charts
 export function getRevenueChartData(
   reports: IncomeStatementReport[],
   isQuarterly: boolean
@@ -103,7 +100,6 @@ export function getNetIncomeChartData(
     .reverse()
 }
 
-// Calculate Free Cash Flow (Operating Cash Flow - Capital Expenditures)
 export function getFreeCashFlowChartData(
   reports: CashFlowReport[],
   isQuarterly: boolean
@@ -113,7 +109,6 @@ export function getFreeCashFlowChartData(
     .map((report) => {
       const operatingCashflow = parseNumericValue(report.operatingCashflow)
       const capex = parseNumericValue(report.capitalExpenditures)
-      // Capital expenditures are typically reported as positive, so we subtract
       const freeCashFlow = operatingCashflow - Math.abs(capex)
       
       return {
