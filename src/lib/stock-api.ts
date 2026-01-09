@@ -93,7 +93,7 @@ export function formatMetricValue(metric: StockMetric): string {
   if (value === null || value === undefined) return 'N/A'
   
   // Price-related fields
-  if (['Price', 'ClosePrice', '52WeekHigh', '52WeekLow', '50DayMovingAverage', '200DayMovingAverage'].includes(key)) {
+  if (['Price', 'ClosePrice', '52WeekHigh', '52WeekLow', '50DayMovingAverage', '200DayMovingAverage', 'AnalystTargetPrice', 'DividendPerShare'].includes(key)) {
     return formatPrice(value)
   }
   
