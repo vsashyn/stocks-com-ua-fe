@@ -4,64 +4,45 @@ import { ThemeToggle } from '@/components/theme-toggle'
 import { StockHeader } from '@/components/stock-header'
 import { KeyMetricsGrid } from '@/components/key-metrics-grid'
 import { FinancialChart } from '@/components/financial-chart'
+import { StockSearch } from '@/components/stock-search'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import {
-  parseOverview,
-  getRevenueChartData,
-  getNetIncomeChartData,
-  getFreeCashFlowChartData,
-  type StockPayload,
-} from '@/lib/stock-data'
-
-// Import the sample data
-import stockData from '../../docs/payload-example.json'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useStockData } from '@/hooks/use-stock-data'
+import { getMetricValue } from '@/lib/stock-api'
+import { TrendingUp, Info } from 'lucide-react'
 
 export const Route = createFileRoute('/')({
   component: StockDashboard,
 })
 
+// Sample chart data for demonstration (since API doesn't provide historical data)
+const sampleRevenueData = [
+  { period: '2019', value: 260174000000 },
+  { period: '2020', value: 274515000000 },
+  { period: '2021', value: 365817000000 },
+  { period: '2022', value: 394328000000 },
+  { period: '2023', value: 383285000000 },
+]
+
+const sampleNetIncomeData = [
+  { period: '2019', value: 55256000000 },
+  { period: '2020', value: 57411000000 },
+  { period: '2021', value: 94680000000 },
+  { period: '2022', value: 99803000000 },
+  { period: '2023', value: 96995000000 },
+]
+
+const sampleFreeCashFlowData = [
+  { period: '2019', value: 58896000000 },
+  { period: '2020', value: 73365000000 },
+  { period: '2021', value: 92953000000 },
+  { period: '2022', value: 111443000000 },
+  { period: '2023', value: 99584000000 },
+]
+
 function StockDashboard() {
   const [viewMode, setViewMode] = useState<'annual' | 'quarterly'>('annual')
-  const data = stockData as StockPayload
-
-  const overview = parseOverview(data.overview)
-  const isQuarterly = viewMode === 'quarterly'
-
-  const revenueData = getRevenueChartData(
-    isQuarterly
-      ? data.incomeStatement.quarterlyReports
-      : data.incomeStatement.annualReports,
-    isQuarterly
-  )
-
-  const netIncomeData = getNetIncomeChartData(
-    isQuarterly
-      ? data.incomeStatement.quarterlyReports
-      : data.incomeStatement.annualReports,
-    isQuarterly
-  )
-
-  const freeCashFlowData = getFreeCashFlowChartData(
-    isQuarterly
-      ? data.cashFlow.quarterlyReports
-      : data.cashFlow.annualReports,
-    isQuarterly
-  )
-
-  const metrics = [
-    { label: 'P/E Ratio', value: overview.peRatio, subValue: `Fwd: ${overview.forwardPE}` },
-    { label: 'PEG Ratio', value: overview.pegRatio },
-    { label: 'P/S Ratio', value: overview.priceToSales },
-    { label: 'P/B Ratio', value: overview.priceToBook },
-    { label: 'ROE', value: overview.roe },
-    { label: 'ROA', value: overview.roa },
-    { label: 'Profit Margin', value: overview.profitMargin },
-    { label: 'Operating Margin', value: overview.operatingMargin },
-    { label: 'EPS', value: `$${overview.eps}` },
-    { label: 'Dividend Yield', value: overview.dividendYield },
-    { label: 'Beta', value: overview.beta },
-    { label: '52W Range', value: overview.week52Range },
-  ]
+  const { data, isLoading, error, searchTicker } = useStockData()
 
   return (
     <div className="min-h-screen bg-background">
@@ -77,132 +58,210 @@ function StockDashboard() {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-6 space-y-6">
-        {/* Stock Header */}
-        <StockHeader
-          symbol={data.incomeStatement.symbol}
-          companyName={overview.companyName}
-          currentPrice={overview.currentPrice}
-          marketCap={overview.marketCap}
-          sector={overview.sector}
-          country={overview.country}
-        />
-
-        {/* Key Metrics */}
-        <section>
-          <h2 className="text-lg font-semibold text-foreground mb-3">Key Metrics</h2>
-          <KeyMetricsGrid metrics={metrics} />
+        {/* Search Bar */}
+        <section className="w-full max-w-2xl mx-auto">
+          <StockSearch
+            onSearch={searchTicker}
+            isLoading={isLoading}
+            error={error}
+          />
         </section>
 
-        {/* Financial Charts */}
-        <section>
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-4">
-            <h2 className="text-lg font-semibold text-foreground">Financial Performance</h2>
-            <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'annual' | 'quarterly')}>
-              <TabsList>
-                <TabsTrigger value="annual">Annual</TabsTrigger>
-                <TabsTrigger value="quarterly">Quarterly</TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </div>
+        {/* Empty State */}
+        {!data && !isLoading && !error && (
+          <EmptyState />
+        )}
 
-          <Tabs value={viewMode} className="space-y-4">
-            <TabsContent value="annual" className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                <FinancialChart
-                  title="Revenue"
-                  description="Total annual revenue"
-                  data={revenueData}
-                  color="var(--chart-1)"
+        {/* Stock Data Display */}
+        {data && (
+          <>
+            {/* Stock Header */}
+            <StockHeader
+              ticker={data.ticker}
+              marketSummary={data.data.market_summary}
+            />
+
+            {/* Market Summary Metrics */}
+            <section>
+              <h2 className="text-lg font-semibold text-foreground mb-3">Market Summary</h2>
+              <KeyMetricsGrid metrics={data.data.market_summary} />
+            </section>
+
+            {/* Valuation Metrics */}
+            <section>
+              <h2 className="text-lg font-semibold text-foreground mb-3">Valuation</h2>
+              <KeyMetricsGrid metrics={data.data.valuation} />
+            </section>
+
+            {/* Financial Charts - Sample Data Notice */}
+            <section>
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-lg font-semibold text-foreground">Financial Performance</h2>
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
+                    <Info className="h-3 w-3" />
+                    <span>Sample Data</span>
+                  </div>
+                </div>
+                <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'annual' | 'quarterly')}>
+                  <TabsList>
+                    <TabsTrigger value="annual">Annual</TabsTrigger>
+                    <TabsTrigger value="quarterly">Quarterly</TabsTrigger>
+                  </TabsList>
+                </Tabs>
+              </div>
+
+              <Card className="mb-4 border-dashed">
+                <CardContent className="py-3 px-4">
+                  <p className="text-sm text-muted-foreground">
+                    Historical financial data (Revenue, Net Income, Free Cash Flow) is displayed as sample data. 
+                    The current API provides real-time market metrics only.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Tabs value={viewMode} className="space-y-4">
+                <TabsContent value="annual" className="space-y-4">
+                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    <FinancialChart
+                      title="Revenue"
+                      description="Total annual revenue"
+                      data={sampleRevenueData}
+                      color="var(--chart-1)"
+                    />
+                    <FinancialChart
+                      title="Net Income"
+                      description="Annual net profit/loss"
+                      data={sampleNetIncomeData}
+                      color="var(--chart-2)"
+                      showNegativeColors
+                      positiveColor="var(--chart-2)"
+                      negativeColor="var(--destructive)"
+                    />
+                    <FinancialChart
+                      title="Free Cash Flow"
+                      description="Operating cash flow minus CapEx"
+                      data={sampleFreeCashFlowData}
+                      showNegativeColors
+                      positiveColor="var(--chart-3)"
+                      negativeColor="var(--destructive)"
+                      className="md:col-span-2 lg:col-span-1"
+                    />
+                  </div>
+                </TabsContent>
+                <TabsContent value="quarterly" className="space-y-4">
+                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    <FinancialChart
+                      title="Revenue"
+                      description="Quarterly revenue"
+                      data={sampleRevenueData}
+                      color="var(--chart-1)"
+                    />
+                    <FinancialChart
+                      title="Net Income"
+                      description="Quarterly net profit/loss"
+                      data={sampleNetIncomeData}
+                      color="var(--chart-2)"
+                      showNegativeColors
+                      positiveColor="var(--chart-2)"
+                      negativeColor="var(--destructive)"
+                    />
+                    <FinancialChart
+                      title="Free Cash Flow"
+                      description="Operating cash flow minus CapEx"
+                      data={sampleFreeCashFlowData}
+                      showNegativeColors
+                      positiveColor="var(--chart-3)"
+                      negativeColor="var(--destructive)"
+                      className="md:col-span-2 lg:col-span-1"
+                    />
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </section>
+
+            {/* Quick Stats */}
+            <section>
+              <h2 className="text-lg font-semibold text-foreground mb-3">Quick Stats</h2>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                <QuickStatCard
+                  label="52 Week High"
+                  value={formatPriceValue(getMetricValue(data.data.market_summary, '52WeekHigh'))}
                 />
-                <FinancialChart
-                  title="Net Income"
-                  description="Annual net profit/loss"
-                  data={netIncomeData}
-                  color="var(--chart-2)"
-                  showNegativeColors
-                  positiveColor="var(--chart-2)"
-                  negativeColor="var(--destructive)"
+                <QuickStatCard
+                  label="52 Week Low"
+                  value={formatPriceValue(getMetricValue(data.data.market_summary, '52WeekLow'))}
                 />
-                <FinancialChart
-                  title="Free Cash Flow"
-                  description="Operating cash flow minus CapEx"
-                  data={freeCashFlowData}
-                  showNegativeColors
-                  positiveColor="var(--chart-3)"
-                  negativeColor="var(--destructive)"
-                  className="md:col-span-2 lg:col-span-1"
+                <QuickStatCard
+                  label="50 Day MA"
+                  value={formatPriceValue(getMetricValue(data.data.market_summary, '50DayMovingAverage'))}
+                />
+                <QuickStatCard
+                  label="200 Day MA"
+                  value={formatPriceValue(getMetricValue(data.data.market_summary, '200DayMovingAverage'))}
                 />
               </div>
-            </TabsContent>
-            <TabsContent value="quarterly" className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                <FinancialChart
-                  title="Revenue"
-                  description="Quarterly revenue"
-                  data={revenueData}
-                  color="var(--chart-1)"
-                />
-                <FinancialChart
-                  title="Net Income"
-                  description="Quarterly net profit/loss"
-                  data={netIncomeData}
-                  color="var(--chart-2)"
-                  showNegativeColors
-                  positiveColor="var(--chart-2)"
-                  negativeColor="var(--destructive)"
-                />
-                <FinancialChart
-                  title="Free Cash Flow"
-                  description="Operating cash flow minus CapEx"
-                  data={freeCashFlowData}
-                  showNegativeColors
-                  positiveColor="var(--chart-3)"
-                  negativeColor="var(--destructive)"
-                  className="md:col-span-2 lg:col-span-1"
-                />
-              </div>
-            </TabsContent>
-          </Tabs>
-        </section>
-
-        {/* Analyst Ratings */}
-        <section>
-          <h2 className="text-lg font-semibold text-foreground mb-3">Analyst Summary</h2>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <div className="rounded-lg bg-muted p-4 text-center">
-              <p className="text-2xl font-bold font-mono text-foreground">
-                ${overview.targetPrice}
-              </p>
-              <p className="text-xs text-muted-foreground">Target Price</p>
-            </div>
-            <div className="rounded-lg bg-muted p-4 text-center">
-              <p className="text-2xl font-bold font-mono text-foreground">
-                {overview.revenueGrowth}
-              </p>
-              <p className="text-xs text-muted-foreground">Revenue Growth</p>
-            </div>
-            <div className="rounded-lg bg-muted p-4 text-center">
-              <p className="text-2xl font-bold font-mono text-foreground">
-                {overview.earningsGrowth}
-              </p>
-              <p className="text-xs text-muted-foreground">Earnings Growth</p>
-            </div>
-            <div className="rounded-lg bg-muted p-4 text-center">
-              <p className="text-2xl font-bold font-mono text-foreground">
-                {overview.institutionalOwnership}
-              </p>
-              <p className="text-xs text-muted-foreground">Institutional Own.</p>
-            </div>
-          </div>
-        </section>
+            </section>
+          </>
+        )}
       </main>
 
       {/* Footer */}
       <footer className="border-t py-6 mt-8">
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          Data provided for informational purposes only
+          Data provided by stocks.com.ua API • For informational purposes only
         </div>
       </footer>
     </div>
   )
+}
+
+function EmptyState() {
+  return (
+    <Card className="max-w-2xl mx-auto">
+      <CardHeader className="text-center pb-2">
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+          <TrendingUp className="h-8 w-8 text-primary" />
+        </div>
+        <CardTitle className="text-2xl">Stock Dashboard</CardTitle>
+        <CardDescription className="text-base">
+          Enter a stock ticker symbol above to view real-time market data, 
+          valuation metrics, and financial performance.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="text-center">
+        <div className="flex flex-wrap justify-center gap-2 text-sm text-muted-foreground">
+          <span>Try:</span>
+          <code className="bg-muted px-2 py-0.5 rounded">AAPL</code>
+          <code className="bg-muted px-2 py-0.5 rounded">MSFT</code>
+          <code className="bg-muted px-2 py-0.5 rounded">GOOGL</code>
+          <code className="bg-muted px-2 py-0.5 rounded">AMZN</code>
+          <code className="bg-muted px-2 py-0.5 rounded">TSLA</code>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+interface QuickStatCardProps {
+  label: string
+  value: string
+}
+
+function QuickStatCard({ label, value }: QuickStatCardProps) {
+  return (
+    <div className="rounded-lg bg-muted p-4 text-center">
+      <p className="text-2xl font-bold font-mono text-foreground">
+        {value}
+      </p>
+      <p className="text-xs text-muted-foreground">{label}</p>
+    </div>
+  )
+}
+
+function formatPriceValue(value: string | number | null): string {
+  if (value === null || value === undefined) return 'N/A'
+  const numValue = typeof value === 'string' ? parseFloat(value) : value
+  if (isNaN(numValue)) return 'N/A'
+  return `$${numValue.toFixed(2)}`
 }
