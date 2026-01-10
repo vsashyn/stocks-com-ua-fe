@@ -6,31 +6,37 @@ import {
   YAxis,
   Cell,
   ReferenceLine,
-} from 'recharts'
+} from 'recharts';
 import {
   type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from '@/components/ui/chart'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { cn } from '@/lib/utils'
-import { formatAxisValue, formatLargeNumber } from '@/lib/format-utils'
+} from '@/components/ui/chart';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from '@/components/ui/card';
+import { cn } from '@/lib/utils';
+import { formatAxisValue, formatLargeNumber } from '@/lib/format-utils';
 
 interface ChartDataPoint {
-  period: string
-  value: number
+  period: string;
+  value: number;
 }
 
 interface FinancialChartProps {
-  title: string
-  description?: string
-  data: ChartDataPoint[]
-  color?: string
-  positiveColor?: string
-  negativeColor?: string
-  showNegativeColors?: boolean
-  className?: string
+  title: string;
+  description?: string;
+  data: ChartDataPoint[];
+  color?: string;
+  positiveColor?: string;
+  negativeColor?: string;
+  showNegativeColors?: boolean;
+  className?: string;
 }
 
 export function FinancialChart({
@@ -48,20 +54,25 @@ export function FinancialChart({
       label: title,
       color: color,
     },
-  } satisfies ChartConfig
+  } satisfies ChartConfig;
 
-  const hasNegativeValues = data.some((d) => d.value < 0)
+  const hasNegativeValues = data.some((d) => d.value < 0);
 
   return (
     <Card className={cn('overflow-hidden', className)}>
       <CardHeader className="pb-2">
         <CardTitle className="text-base md:text-lg">{title}</CardTitle>
         {description && (
-          <CardDescription className="text-xs md:text-sm">{description}</CardDescription>
+          <CardDescription className="text-xs md:text-sm">
+            {description}
+          </CardDescription>
         )}
       </CardHeader>
       <CardContent className="px-2 pb-4 md:px-4">
-        <ChartContainer config={chartConfig} className="h-[200px] w-full md:h-[280px]">
+        <ChartContainer
+          config={chartConfig}
+          className="h-[200px] w-full md:h-[280px]"
+        >
           <BarChart
             data={data}
             margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
@@ -90,7 +101,9 @@ export function FinancialChart({
               content={
                 <ChartTooltipContent
                   formatter={(value) => (
-                    <span className="font-mono">{formatLargeNumber(value as number)}</span>
+                    <span className="font-mono">
+                      {formatLargeNumber(value as number)}
+                    </span>
                   )}
                 />
               }
@@ -116,6 +129,5 @@ export function FinancialChart({
         </ChartContainer>
       </CardContent>
     </Card>
-  )
+  );
 }
-

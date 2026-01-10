@@ -1,49 +1,55 @@
-import { parseNumericValue, getFiscalYear, getFiscalQuarter } from './format-utils'
+import {
+  parseNumericValue,
+  getFiscalYear,
+  getFiscalQuarter,
+} from './format-utils';
 
 export interface IncomeStatementReport {
-  fiscalDateEnding: string
-  reportedCurrency: string
-  totalRevenue: string
-  netIncome: string
-  grossProfit: string
-  operatingIncome: string
-  ebitda: string
-  [key: string]: string
+  fiscalDateEnding: string;
+  reportedCurrency: string;
+  totalRevenue: string;
+  netIncome: string;
+  grossProfit: string;
+  operatingIncome: string;
+  ebitda: string;
+  [key: string]: string;
 }
 
 export interface CashFlowReport {
-  fiscalDateEnding: string
-  reportedCurrency: string
-  operatingCashflow: string
-  capitalExpenditures: string
-  netIncome: string
-  [key: string]: string
+  fiscalDateEnding: string;
+  reportedCurrency: string;
+  operatingCashflow: string;
+  capitalExpenditures: string;
+  netIncome: string;
+  [key: string]: string;
 }
 
 export interface StockPayload {
-  success: boolean
-  type: string
-  overview: string
+  success: boolean;
+  type: string;
+  overview: string;
   incomeStatement: {
-    symbol: string
-    annualReports: IncomeStatementReport[]
-    quarterlyReports: IncomeStatementReport[]
-  }
+    symbol: string;
+    annualReports: IncomeStatementReport[];
+    quarterlyReports: IncomeStatementReport[];
+  };
   cashFlow: {
-    symbol: string
-    annualReports: CashFlowReport[]
-    quarterlyReports: CashFlowReport[]
-  }
+    symbol: string;
+    annualReports: CashFlowReport[];
+    quarterlyReports: CashFlowReport[];
+  };
 }
 
 export function parseOverview(overview: string) {
   const extractValue = (pattern: RegExp): string => {
-    const match = overview.match(pattern)
-    return match ? match[1].trim() : 'N/A'
-  }
+    const match = overview.match(pattern);
+    return match ? match[1].trim() : 'N/A';
+  };
 
   return {
-    companyName: overview.match(/Огляд компанії:<\/u>\n\s*([^\n]+)/)?.[1]?.trim() || 'Unknown Company',
+    companyName:
+      overview.match(/Огляд компанії:<\/u>\n\s*([^\n]+)/)?.[1]?.trim() ||
+      'Unknown Company',
     country: extractValue(/Країна:\s*<b>([^<]+)<\/b>/),
     sector: extractValue(/Сектор:\s*<b>([^<]+)<\/b>/),
     marketCap: extractValue(/Ринкова капіталізація:\s*<b>([^<]+)<\/b>/),
@@ -67,7 +73,7 @@ export function parseOverview(overview: string) {
     targetPrice: extractValue(/Цільова ціна:([^\n]+)/),
     insiderOwnership: extractValue(/Інсайдери:\s*<b>([^<]+)<\/b>/),
     institutionalOwnership: extractValue(/Інституційні:\s*<b>([^<]+)<\/b>/),
-  }
+  };
 }
 
 export function getRevenueChartData(
@@ -82,7 +88,7 @@ export function getRevenueChartData(
         : getFiscalYear(report.fiscalDateEnding),
       value: parseNumericValue(report.totalRevenue),
     }))
-    .reverse()
+    .reverse();
 }
 
 export function getNetIncomeChartData(
@@ -97,7 +103,7 @@ export function getNetIncomeChartData(
         : getFiscalYear(report.fiscalDateEnding),
       value: parseNumericValue(report.netIncome),
     }))
-    .reverse()
+    .reverse();
 }
 
 export function getFreeCashFlowChartData(
@@ -107,17 +113,16 @@ export function getFreeCashFlowChartData(
   return reports
     .slice(0, isQuarterly ? 12 : 10)
     .map((report) => {
-      const operatingCashflow = parseNumericValue(report.operatingCashflow)
-      const capex = parseNumericValue(report.capitalExpenditures)
-      const freeCashFlow = operatingCashflow - Math.abs(capex)
-      
+      const operatingCashflow = parseNumericValue(report.operatingCashflow);
+      const capex = parseNumericValue(report.capitalExpenditures);
+      const freeCashFlow = operatingCashflow - Math.abs(capex);
+
       return {
         period: isQuarterly
           ? getFiscalQuarter(report.fiscalDateEnding)
           : getFiscalYear(report.fiscalDateEnding),
         value: freeCashFlow,
-      }
+      };
     })
-    .reverse()
+    .reverse();
 }
-

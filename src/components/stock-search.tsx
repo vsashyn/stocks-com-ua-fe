@@ -1,14 +1,14 @@
-import { useState, type FormEvent, type KeyboardEvent } from 'react'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
-import { Search, Loader2 } from 'lucide-react'
+import { useState, type FormEvent, type KeyboardEvent } from 'react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { Search, Loader2 } from 'lucide-react';
 
 interface StockSearchProps {
-  onSearch: (ticker: string) => Promise<void>
-  isLoading?: boolean
-  error?: string | null
-  className?: string
+  onSearch: (ticker: string) => Promise<void>;
+  isLoading?: boolean;
+  error?: string | null;
+  className?: string;
 }
 
 export function StockSearch({
@@ -17,21 +17,21 @@ export function StockSearch({
   error,
   className,
 }: StockSearchProps) {
-  const [ticker, setTicker] = useState('')
+  const [ticker, setTicker] = useState('');
 
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (ticker.trim() && !isLoading) {
-      await onSearch(ticker.trim().toUpperCase())
+      await onSearch(ticker.trim().toUpperCase());
     }
-  }
+  };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && ticker.trim() && !isLoading) {
-      e.preventDefault()
-      onSearch(ticker.trim().toUpperCase())
+      e.preventDefault();
+      onSearch(ticker.trim().toUpperCase());
     }
-  }
+  };
 
   return (
     <div className={cn('w-full', className)}>
@@ -49,8 +49,8 @@ export function StockSearch({
             aria-label="Stock ticker symbol"
           />
         </div>
-        <Button 
-          type="submit" 
+        <Button
+          type="submit"
           disabled={!ticker.trim() || isLoading}
           className="h-11 px-6"
         >
@@ -70,5 +70,5 @@ export function StockSearch({
         </p>
       )}
     </div>
-  )
+  );
 }

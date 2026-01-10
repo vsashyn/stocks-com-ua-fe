@@ -1,34 +1,38 @@
-import { useState } from 'react'
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import { useState } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import {
   type StockMetric,
   getPrimaryMetrics,
   getExtendedMetrics,
   formatMetricValue,
-} from '@/lib/stock-api'
-import { ChevronDown, ChevronUp } from 'lucide-react'
+} from '@/lib/stock-api';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 interface KeyMetricsGridProps {
-  metrics: StockMetric[]
-  title?: string
-  className?: string
+  metrics: StockMetric[];
+  title?: string;
+  className?: string;
 }
 
-export function KeyMetricsGrid({ metrics, title, className }: KeyMetricsGridProps) {
-  const [showExtended, setShowExtended] = useState(false)
-  
-  const primaryMetrics = getPrimaryMetrics(metrics)
-  const extendedMetrics = getExtendedMetrics(metrics)
-  const hasExtended = extendedMetrics.length > 0
+export function KeyMetricsGrid({
+  metrics,
+  title,
+  className,
+}: KeyMetricsGridProps) {
+  const [showExtended, setShowExtended] = useState(false);
+
+  const primaryMetrics = getPrimaryMetrics(metrics);
+  const extendedMetrics = getExtendedMetrics(metrics);
+  const hasExtended = extendedMetrics.length > 0;
 
   return (
     <div className={cn('space-y-3', className)}>
       {title && (
         <h3 className="text-base font-semibold text-foreground">{title}</h3>
       )}
-      
+
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
         {primaryMetrics.map((metric) => (
           <MetricCard key={metric.key} metric={metric} />
@@ -44,7 +48,7 @@ export function KeyMetricsGrid({ metrics, title, className }: KeyMetricsGridProp
               ))}
             </div>
           )}
-          
+
           <Button
             variant="ghost"
             size="sm"
@@ -66,18 +70,21 @@ export function KeyMetricsGrid({ metrics, title, className }: KeyMetricsGridProp
         </>
       )}
     </div>
-  )
+  );
 }
 
 interface MetricCardProps {
-  metric: StockMetric
+  metric: StockMetric;
 }
 
 function MetricCard({ metric }: MetricCardProps) {
   return (
     <Card className="overflow-hidden">
       <CardContent className="p-3 md:p-4">
-        <p className="text-xs text-muted-foreground truncate" title={metric.label_en}>
+        <p
+          className="text-xs text-muted-foreground truncate"
+          title={metric.label_en}
+        >
           {metric.label_en}
         </p>
         <p className="text-lg font-bold font-mono text-foreground md:text-xl">
@@ -85,5 +92,5 @@ function MetricCard({ metric }: MetricCardProps) {
         </p>
       </CardContent>
     </Card>
-  )
+  );
 }

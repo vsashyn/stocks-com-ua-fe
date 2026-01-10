@@ -1,18 +1,18 @@
-import { Card, CardContent } from '@/components/ui/card'
-import { cn } from '@/lib/utils'
+import { Card, CardContent } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 import {
   type StockMetric,
   getMetricValue,
   formatPrice,
   formatLargeNumber,
   formatPercentChange,
-} from '@/lib/stock-api'
-import { TrendingUp, TrendingDown } from 'lucide-react'
+} from '@/lib/stock-api';
+import { TrendingUp, TrendingDown } from 'lucide-react';
 
 interface StockHeaderProps {
-  ticker: string
-  marketSummary: StockMetric[]
-  className?: string
+  ticker: string;
+  marketSummary: StockMetric[];
+  className?: string;
 }
 
 export function StockHeader({
@@ -20,15 +20,18 @@ export function StockHeader({
   marketSummary,
   className,
 }: StockHeaderProps) {
-  const price = getMetricValue(marketSummary, 'Price')
-  const priceDiff = getMetricValue(marketSummary, 'PriceDifference')
-  const changePercent = getMetricValue(marketSummary, 'ChangePercent')
-  const marketCap = getMetricValue(marketSummary, 'MarketCapitalization')
-  const sector = getMetricValue(marketSummary, 'Sector')
-  const industry = getMetricValue(marketSummary, 'Industry')
+  const price = getMetricValue(marketSummary, 'Price');
+  const priceDiff = getMetricValue(marketSummary, 'PriceDifference');
+  const changePercent = getMetricValue(marketSummary, 'ChangePercent');
+  const marketCap = getMetricValue(marketSummary, 'MarketCapitalization');
+  const sector = getMetricValue(marketSummary, 'Sector');
+  const industry = getMetricValue(marketSummary, 'Industry');
 
-  const numericDiff = typeof priceDiff === 'number' ? priceDiff : parseFloat(String(priceDiff || '0'))
-  const isPositive = !isNaN(numericDiff) && numericDiff >= 0
+  const numericDiff =
+    typeof priceDiff === 'number'
+      ? priceDiff
+      : parseFloat(String(priceDiff || '0'));
+  const isPositive = !isNaN(numericDiff) && numericDiff >= 0;
 
   return (
     <Card className={cn('overflow-hidden', className)}>
@@ -51,7 +54,7 @@ export function StockHeader({
               </div>
             </div>
           </div>
-          
+
           <div className="flex gap-6 md:gap-8">
             <div className="text-left md:text-right">
               <p className="text-sm text-muted-foreground">Price</p>
@@ -59,10 +62,14 @@ export function StockHeader({
                 <p className="text-2xl font-bold font-mono text-foreground md:text-3xl">
                   {formatPrice(price)}
                 </p>
-                <div className={cn(
-                  'flex items-center gap-1 text-sm font-medium',
-                  isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
-                )}>
+                <div
+                  className={cn(
+                    'flex items-center gap-1 text-sm font-medium',
+                    isPositive
+                      ? 'text-green-600 dark:text-green-400'
+                      : 'text-red-600 dark:text-red-400'
+                  )}
+                >
                   {isPositive ? (
                     <TrendingUp className="h-4 w-4" />
                   ) : (
@@ -71,7 +78,8 @@ export function StockHeader({
                   <span>
                     {priceDiff !== null && (
                       <>
-                        {isPositive ? '+' : ''}${Math.abs(numericDiff).toFixed(2)}
+                        {isPositive ? '+' : ''}$
+                        {Math.abs(numericDiff).toFixed(2)}
                       </>
                     )}
                   </span>
@@ -89,5 +97,5 @@ export function StockHeader({
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
