@@ -30,15 +30,17 @@ function TickerPage() {
   const { language } = useLanguage();
 
   return (
-    <div className="min-h-screen p-4 pt-16">
-      <div className="mx-auto max-w-6xl">
-        <div className="mb-6 flex items-center gap-4">
-          <Button variant="ghost" size="icon" asChild>
+    <div className="min-h-screen px-4 py-4 pt-16 sm:px-6 md:px-8">
+      <div className="mx-auto max-w-6xl w-full">
+        <div className="mb-6 flex items-center gap-2 sm:gap-4 min-w-0">
+          <Button variant="ghost" size="icon" asChild className="shrink-0">
             <Link to="/">
               <ArrowLeft className="size-5" />
             </Link>
           </Button>
-          <h1 className="text-3xl font-bold text-foreground">{ticker}</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground truncate min-w-0">
+            {ticker}
+          </h1>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
