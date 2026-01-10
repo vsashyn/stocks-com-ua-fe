@@ -33,7 +33,7 @@ function TickerPage() {
     <div className="min-h-screen px-4 py-4 pt-16 sm:px-6 md:px-8">
       <div className="mx-auto max-w-6xl w-full">
         <div className="mb-6 flex items-center gap-2 sm:gap-4 min-w-0">
-          <Button variant="ghost" size="icon" asChild className="flex-shrink-0">
+          <Button variant="ghost" size="icon" asChild className="shrink-0">
             <Link to="/">
               <ArrowLeft className="size-5" />
             </Link>

@@ -6,7 +6,7 @@ import {
 } from '@/components/ui/card';
 import type { StockMetric } from '@/lib/api';
 import type { Language } from '@/hooks/use-language';
-import { formatValue } from '@/lib/format';
+import { formatValue, getChangeValueColor } from '@/lib/format';
 import { cn } from '@/lib/utils';
 
 interface MetricBlockProps {
@@ -71,7 +71,7 @@ interface MetricRowProps {
 function MetricRow({ metric, language, isPrimary }: MetricRowProps) {
   const label = language === 'uk' ? metric.label_uk : metric.label_en;
   const value = formatValue(metric.value, metric.key);
-  const valueColor = getValueColor(metric.key, metric.value);
+  const valueColor = getChangeValueColor(metric.key, metric.value);
 
   return (
     <div
@@ -99,16 +99,4 @@ function MetricRow({ metric, language, isPrimary }: MetricRowProps) {
       </span>
     </div>
   );
-}
-
-function getValueColor(key: string, value: number | string | null): string {
-  if (value === null || value === undefined) return '';
-
-  const changeKeys = ['PriceDifference', 'ChangePercent'];
-  if (!changeKeys.includes(key)) return '';
-
-  const numValue = typeof value === 'string' ? parseFloat(value) : value;
-  if (isNaN(numValue)) return '';
-
-  return numValue >= 0 ? 'text-chart-1' : 'text-destructive';
 }

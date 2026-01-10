@@ -123,3 +123,18 @@ export function formatValue(
 
   return String(value);
 }
+
+const CHANGE_VALUE_KEYS = ['PriceDifference', 'ChangePercent'];
+
+export function getChangeValueColor(
+  key: string,
+  value: number | string | null
+): string {
+  if (value === null || value === undefined) return '';
+  if (!CHANGE_VALUE_KEYS.includes(key)) return '';
+
+  const numValue = typeof value === 'string' ? parseFloat(value) : value;
+  if (isNaN(numValue)) return '';
+
+  return numValue >= 0 ? 'text-chart-1' : 'text-destructive';
+}
