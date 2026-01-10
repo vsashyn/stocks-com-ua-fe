@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from '@tanstack/react-router';
 import { createFileRoute } from '@tanstack/react-router';
 import { Input } from '@/components/ui/input';
@@ -9,6 +10,7 @@ export const Route = createFileRoute('/')({
 });
 
 function HomePage() {
+  const { t } = useTranslation();
   const [ticker, setTicker] = useState('');
   const navigate = useNavigate();
 
@@ -29,12 +31,12 @@ function HomePage() {
         <form onSubmit={handleSearch} className="flex gap-2">
           <Input
             type="text"
-            placeholder="Enter company ticker"
+            placeholder={t('common.enterCompanyTicker')}
             className="flex-1"
             value={ticker}
             onChange={(e) => setTicker(e.target.value)}
           />
-          <Button type="submit">Search</Button>
+          <Button type="submit">{t('common.search')}</Button>
         </form>
       </div>
     </div>

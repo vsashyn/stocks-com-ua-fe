@@ -1,0 +1,20 @@
+{
+  "common": {
+    "search": "Search",
+    "enterCompanyTicker": "Enter company ticker",
+    "toggleLanguage": "Toggle language"
+  },
+  "blocks": {
+    "market_summary": "Market Summary",
+    "valuation": "Valuation",
+    "profitability": "Profitability",
+    "dividends": "Dividends",
+    "forecasts": "Forecasts",
+    "balance_sheet": "Balance Sheet",
+    "financial_health": "Financial Health"
+  },
+  "language": {
+    "uk": "UK",
+    "en": "EN"
+  }
+}

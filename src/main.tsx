@@ -4,6 +4,7 @@ import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { routeTree } from './routeTree.gen';
 
 import './styles.css';
+import './lib/i18n'; // Initialize i18n
 import reportWebVitals from './reportWebVitals.ts';
 
 // Initialize theme before React renders to prevent flash

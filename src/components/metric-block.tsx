@@ -1,22 +1,24 @@
+import { useTranslation } from 'react-i18next';
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import type { StockMetric } from '@/lib/api';
-import type { Language } from '@/hooks/use-language';
+import type { StockMetric, StockData } from '@/lib/api';
+import type { Language } from '@/lib/i18n';
 import { formatValue, getChangeValueColor } from '@/lib/format';
 import { cn } from '@/lib/utils';
 
 interface MetricBlockProps {
-  title: { en: string; uk: string };
+  titleKey: keyof StockData;
   metrics: StockMetric[];
-  language: Language;
 }
 
-export function MetricBlock({ title, metrics, language }: MetricBlockProps) {
-  const displayTitle = language === 'uk' ? title.uk : title.en;
+export function MetricBlock({ titleKey, metrics }: MetricBlockProps) {
+  const { t, i18n } = useTranslation();
+  const language = i18n.language as Language;
+  const displayTitle = t(`blocks.${titleKey}`);
 
   const primaryMetrics = metrics.filter((m) => m.is_primary);
   const secondaryMetrics = metrics.filter((m) => !m.is_primary);

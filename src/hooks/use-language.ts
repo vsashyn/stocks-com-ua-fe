@@ -1,26 +1,20 @@
-import { useState, useCallback } from 'react';
-
-export type Language = 'en' | 'uk';
-
-function getStoredLanguage(): Language {
-  if (typeof window === 'undefined') return 'uk';
-  return (localStorage.getItem('language') as Language) || 'uk';
-}
+import { useTranslation } from 'react-i18next';
+import type { Language } from '@/lib/i18n';
 
 export function useLanguage() {
-  const [language, setLanguageState] = useState<Language>(() =>
-    getStoredLanguage()
-  );
+  const { i18n } = useTranslation();
 
-  const setLanguage = useCallback((newLanguage: Language) => {
-    setLanguageState(newLanguage);
+  const language = i18n.language as Language;
+
+  const setLanguage = (newLanguage: Language) => {
+    void i18n.changeLanguage(newLanguage);
     localStorage.setItem('language', newLanguage);
-  }, []);
+  };
 
-  const toggleLanguage = useCallback(() => {
+  const toggleLanguage = () => {
     const newLanguage = language === 'en' ? 'uk' : 'en';
     setLanguage(newLanguage);
-  }, [language, setLanguage]);
+  };
 
   return {
     language,

@@ -1,9 +1,8 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { ArrowLeft } from 'lucide-react';
-import { fetchStockData, BLOCK_TITLES } from '@/lib/api';
+import { fetchStockData } from '@/lib/api';
 import type { StockData } from '@/lib/api';
 import { MetricBlock } from '@/components/metric-block';
-import { useLanguage } from '@/hooks/use-language';
 import { Button } from '@/components/ui/button';
 
 export const Route = createFileRoute('/ticker/$ticker')({
@@ -27,7 +26,6 @@ const BLOCK_ORDER: (keyof StockData)[] = [
 function TickerPage() {
   const { ticker } = Route.useParams();
   const { data } = Route.useLoaderData();
-  const { language } = useLanguage();
 
   return (
     <div className="min-h-screen px-4 py-4 pt-16 sm:px-6 md:px-8">
@@ -51,9 +49,8 @@ function TickerPage() {
             return (
               <MetricBlock
                 key={blockKey}
-                title={BLOCK_TITLES[blockKey]}
+                titleKey={blockKey}
                 metrics={metrics}
-                language={language}
               />
             );
           })}
