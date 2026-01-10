@@ -1,0 +1,1 @@
+Take diff for all staged and unstaged changes. Create a commit using git and add a commit message from the summary of difference. 
