@@ -15,7 +15,8 @@ function initializeTheme() {
   };
 
   const storedTheme = localStorage.getItem('theme') || 'system';
-  const effectiveTheme = storedTheme === 'system' ? getSystemTheme() : storedTheme;
+  const effectiveTheme =
+    storedTheme === 'system' ? getSystemTheme() : storedTheme;
   const root = document.documentElement;
 
   if (effectiveTheme === 'dark') {
@@ -52,4 +53,4 @@ if (rootElement && !rootElement.innerHTML) {
   );
 }
 
-reportWebVitals();
+void reportWebVitals();
