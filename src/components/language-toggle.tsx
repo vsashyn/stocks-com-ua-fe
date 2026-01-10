@@ -1,7 +1,9 @@
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/hooks/use-language';
 
 export function LanguageToggle() {
+  const { t } = useTranslation();
   const { language, toggleLanguage } = useLanguage();
 
   return (
@@ -9,10 +11,10 @@ export function LanguageToggle() {
       variant="ghost"
       size="sm"
       onClick={toggleLanguage}
-      aria-label="Toggle language"
+      aria-label={t('common.toggleLanguage')}
       className="font-medium"
     >
-      {language === 'uk' ? 'UK' : 'EN'}
+      {t(`language.${language}`)}
     </Button>
   );
 }

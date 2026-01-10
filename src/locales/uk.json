@@ -1,0 +1,20 @@
+{
+  "common": {
+    "search": "Пошук",
+    "enterCompanyTicker": "Введіть тикер компанії",
+    "toggleLanguage": "Перемкнути мову"
+  },
+  "blocks": {
+    "market_summary": "Ринкові дані",
+    "valuation": "Оцінка вартості",
+    "profitability": "Прибутковість",
+    "dividends": "Дивіденди",
+    "forecasts": "Прогнози",
+    "balance_sheet": "Баланс",
+    "financial_health": "Фінансове здоров'я"
+  },
+  "language": {
+    "uk": "UK",
+    "en": "EN"
+  }
+}

@@ -29,16 +29,6 @@ export interface StockApiResponse {
   message?: string;
 }
 
-export const BLOCK_TITLES: Record<keyof StockData, { en: string; uk: string }> =
-  {
-    market_summary: { en: 'Market Summary', uk: 'Ринкові дані' },
-    valuation: { en: 'Valuation', uk: 'Оцінка вартості' },
-    profitability: { en: 'Profitability', uk: 'Прибутковість' },
-    dividends: { en: 'Dividends', uk: 'Дивіденди' },
-    forecasts: { en: 'Forecasts', uk: 'Прогнози' },
-    balance_sheet: { en: 'Balance Sheet', uk: 'Баланс' },
-    financial_health: { en: 'Financial Health', uk: "Фінансове здоров'я" },
-  };
 
 export async function fetchStockData(
   ticker: string
