@@ -8,8 +8,8 @@ import { LanguageToggle } from '@/components/language-toggle';
 export const Route = createRootRoute({
   component: () => (
     <ThemeProvider>
-      <div className="relative min-h-screen">
-        <div className="absolute right-4 top-4 z-50 flex items-center gap-2">
+      <div className="relative min-h-screen overflow-x-hidden">
+        <div className="absolute right-2 top-2 sm:right-4 sm:top-4 z-50 flex items-center gap-2">
           <LanguageToggle />
           <ThemeToggle />
         </div>

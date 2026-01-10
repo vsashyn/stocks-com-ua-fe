@@ -72,7 +72,6 @@ export function formatValue(
     'OperatingMarginTTM',
     'ReturnOnAssetsTTM',
     'ReturnOnEquityTTM',
-    'GrossProfitTTM',
     'RevenueGrowth',
     'EarningsGrowth',
   ];
@@ -80,6 +79,7 @@ export function formatValue(
     'MarketCapitalization',
     'EBITDA',
     'RevenueTTM',
+    'GrossProfit',
     'GrossProfitTTM',
     'TotalRevenue',
     'TotalDebt',

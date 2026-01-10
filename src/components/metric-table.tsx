@@ -23,12 +23,12 @@ export function MetricTable({ metrics, language }: MetricTableProps) {
       <TableBody>
         {metrics.map((metric) => (
           <TableRow key={metric.key}>
-            <TableCell className="font-medium text-muted-foreground">
+            <TableCell className="w-[60%] px-2 py-2.5 font-medium text-muted-foreground sm:px-3 break-words text-sm">
               {language === 'uk' ? metric.label_uk : metric.label_en}
             </TableCell>
             <TableCell
               className={cn(
-                'text-right font-semibold',
+                'w-[40%] px-2 py-2.5 text-right font-semibold sm:px-3 break-words text-sm',
                 isChangeValue(metric.key, metric.value)
               )}
             >
