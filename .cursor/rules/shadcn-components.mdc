@@ -14,7 +14,7 @@ pnpm dlx shadcn@latest add progress
 
 YOU MUST use `pnpm dlx shadcn@latest` when installing shadcn packages.
 
-Docs for each components are available at `https://ui.shadcn.com/docs/components/<component-id>`. Fetch and read the docs before using the component so that your knowledge is up-to-date.
+Docs for each components are available at `https://ui.shadcn.com/docs/components/<component-id>`. Fetch and read the docs before using the component so that your knowledge is up-to-date. Use shadcn MCP to get up to date components settings.
 
 - `accordion` - Accordion: Stack of headings that expand/collapse to reveal hidden content.
 - `alert` - Alert: Static call-out box for status or info messages.

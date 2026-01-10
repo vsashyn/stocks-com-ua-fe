@@ -14,6 +14,10 @@ alwaysApply: true
 
 REMEMBER you must always come up with a plan, and get sign off from the user, BEFORE writing any code.
 
+## Information about the product
+We are building a dashboard for stock market. UI should always be responsive and conscious. Always use shadcn components for UI. 
+
+
 ## Current dev status
 
 Current status: `in development`
